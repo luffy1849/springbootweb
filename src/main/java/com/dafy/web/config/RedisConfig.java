@@ -2,11 +2,9 @@ package com.dafy.web.config;
 
 import com.dafy.web.util.RedisUtil;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cache.CacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -15,8 +13,11 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 import redis.clients.jedis.JedisPoolConfig;
 
 @Configuration
-@PropertySource("classpath:config/redis.properties")
+@PropertySource("classpath:redis.properties")
 public class RedisConfig {
+
+    @Value("${redis.hostName}")
+    private String hostName;
 
     @Value("${redis.maxIdle}")
     private Integer maxIdle;
@@ -43,11 +44,11 @@ public class RedisConfig {
     private boolean testWhileIdle;
 
 
-    @Value("${spring.redis.cluster.nodes}")
-    private String clusterNodes;
-
-    @Value("${spring.redis.cluster.max-redirects}")
-    private Integer mmaxRedirectsac;
+//    @Value("${spring.redis.cluster.nodes}")
+//    private String clusterNodes;
+//
+//    @Value("${spring.redis.cluster.max-redirects}")
+//    private Integer mmaxRedirectsac;
 
     /**
      * JedisPoolConfig 连接池
@@ -90,7 +91,7 @@ public class RedisConfig {
         //连接池
         JedisConnectionFactory.setPoolConfig(jedisPoolConfig);
         //IP地址
-        JedisConnectionFactory.setHostName("192.168.177.128");
+        JedisConnectionFactory.setHostName(hostName);
         //端口号
         JedisConnectionFactory.setPort(6379);
         //如果Redis设置有密码
